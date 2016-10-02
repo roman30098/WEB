@@ -1,0 +1,219 @@
+body{
+    margin: 0;
+    padding: 0;
+    color: #444;
+    background-color: #fff;
+}
+
+#NavbarLogo{
+    width: 110px;
+}
+
+#NavbarLogoNormal{
+    height: 50px;
+    background-color: #D92D2E;
+    color: #fff;
+    text-align: center;
+}
+
+#NavbarLogoAfter{
+    height: 10px;
+    width: 100px;
+    background-color: #D92D2E;
+    color: #fff;
+    text-align: center;
+}
+
+#NavbarLogoAfter::after { 
+    content: '';
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 50px;
+    left: 100px;
+    background-image: url('../corner.svg');
+    display: block;
+}
+
+.NavBarNav{
+    width: calc(100% - 110px);
+    border-bottom: 1px solid #eee;
+}
+
+.NavBarNav > li{
+    width: 100px;
+    height: 50px;
+    display: inline-block;
+    text-align: center;
+    list-style: none;
+    line-height: 50px;
+    margin: 0 0px;
+    padding: 0;
+}
+
+.NavBarNav > li:hover{
+    background-color: #D92D2E;
+    color: #fff;
+    text-decoration: none;
+    height: 50px;
+}
+
+.NavBarNav > li:hover > a:after{
+    content: '';
+    display: block;
+    height: 10px;
+    width: 10px;
+    position: relative;
+    top: -50px;
+    left: 0px;
+    background-image: url('../corner.svg');
+    background-color: #fff;
+    transform: rotate(180deg);
+}
+
+.NavBarNav > li:hover:after{
+    content: '';
+    display: block;
+    height: 10px;
+    width: 10px;
+    position: relative;
+    top: -10px;
+    left: 90px;
+    background-image: url('../corner.svg');
+    background-color: #fff;
+}
+
+.clear{
+    clear: both;
+}
+
+li > a {
+    display: block;
+    text-decoration: none;
+    color: #444;
+    height: 50px;
+}
+
+li > a:hover{
+    text-decoration: none;
+    color: #fff;
+}
+
+li > a:focus{
+    text-decoration: none;
+    color: #444;
+}
+
+#content{
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+article.BigArticleLink{
+    width: 100%;
+    height: 500px;
+    position: relative;
+    background-size: cover;
+    background-color: #eee;
+}
+
+article.BigArticleLink:before{
+    content: '';
+    display: block;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 45px;
+    left: 45px;
+    background-image: url('../cornerW.svg');
+    transform: scale(10, 10);
+}
+
+.tags{
+    display: block;
+    background-color: #D92D2E;
+    color: #fff;
+    height: 30px;
+    line-height: 10px;
+    width: 400px;
+    position: absolute;
+    right: 0;
+    bottom: 175px;
+}
+
+.tags::before{
+    content: '';
+    display: block;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 10px;
+    left: -20px;
+    background-image: url('../corner.svg');
+    transform: rotate(180deg) scale(3,3);
+}
+
+.tags > ul{
+    position: absolute;
+    right: 10px;
+}
+
+.tags > ul > li{
+    display: inline;
+    line-height: 30px;
+}
+
+.tags > ul > li::before{
+    content: "#";
+}
+
+.linkText{
+    width: 600px;
+    font-weight: bold;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.title{
+    display: block;
+    background-color: #fff;
+    width: 500px;
+    height: 100px;
+    position: absolute;
+    bottom: 75px;
+    right: 0;
+    padding: 1px 10px;
+}
+
+.title > h2{
+    line-height: 50px;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.title::before{
+    content: '';
+    display: block;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 45px;
+    left: -55px;
+    background-image: url('../cornerW.svg');
+    transform: rotate(180deg) scale(10, 10);
+}
+
+.desc{
+    display: block;
+    background-color: #fff;
+    width: 600px;
+    height: 75px;
+    padding: 1px 10px;
+    text-align: justify;
+}
+
+#pic001{
+    
+}
