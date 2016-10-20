@@ -63,7 +63,7 @@
 				</span>
 			</div>
 			<div id="info" class='alert alert-info'>
-				<p>Dane których szukasz znajdują się w bazie o nazwie <strong>BDZMProjects</strong>.</p>
+				<p>Dane których szukasz znajdują się w tabeli o nazwie <strong>BDZMProjects</strong>.</p>
 			</div>
 			<div id="tip" class='alert alert-info alertBlinkB'></div>
 			<div class="panel panel-primary">
@@ -199,13 +199,12 @@
 							"Wygląda na to, że baza danych nie za bardzo lubi operator <strong>*</strong>. Spróbuj zapytać o konkretne kolumny.",
 							"Może dodasz jakieś aliasy? :)",
 							"Dane są słabo czytelne, posortuj je według nazwisk!",
-							"Nice!"
+							"Oto twoje dane:"
 			];
 
-			$("#tip").hide().show().html("<p><strong>Tip#"+(tipID+1)+"</strong><br>"+tips[tipID]+"</p>");
-
-			$("#tip").removeClass("alertBlink");
-			$("#tip").addClass("alertBlink");
+			$("#tip").hide().removeClass("alertBlink");
+			if(tipID < 4)
+				$("#tip").show().html("<p><strong>Tip#"+(tipID+1)+"</strong><br>"+tips[tipID]+"</p>").addClass("alertBlink");
 		}
 
 		function checkQueryForNextTip(query, tip){

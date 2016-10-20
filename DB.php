@@ -1,16 +1,18 @@
 <?php
 error_reporting(0);
-$serwer = 'localhost';
+$serwer = 'mysql.hostinger.pl';
 $uzytkownik = 'u402006295_r300';
 $haslo = 'F5nLZ$RMjb';
  
-$conn = new mysqli($serwer, $uzytkownik, $haslo, 'u402006295_rd.test');
+$conn = new mysqli($serwer, $uzytkownik, $haslo, 'u402006295_rd');
 $conn->set_charset("utf8");
  
 if($conn->connect_error)
 {
 	die("<div class='alert alert-danger alertBlink' style='margin: 0'><strong>Brak połączenia z DBMS!</strong><br> $conn->connect_error</div>");
 }
+
+$conn->select_db('test');
  
 // operacje wykonywane na bazie
 $sql = $_POST['query'];
