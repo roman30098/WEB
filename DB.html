@@ -1,0 +1,279 @@
+<html>
+	<head>
+	<title>Tematy BDZM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+    <style>
+    	#input, 
+    	#tip, 
+    	#info			{ margin-bottom: 10px;}
+    	#tip			{ display: none; }
+    	#DataBaseOutput	{ padding: 10px; }
+		
+		.alertBlink	{
+			animation-name: alert;
+			animation-delay: 2s;
+			animation-duration: 10s;
+			animation-iteration-count: infinite;
+		}
+
+    	.alertBlinkB		{
+			animation-name: alertB;
+			animation-delay: 2s;
+			animation-duration: 10s;
+			animation-iteration-count: infinite;
+		}
+
+		.noAnim{
+			animation: none !important;
+		}
+
+    	@keyframes alert {
+    		0% 		{box-shadow: #a94442 0 0 10px -5px;}
+    		10% 	{box-shadow: #a94442 0 0 10px 5px;}
+    		20% 	{box-shadow: #a94442 0 0 10px -5px;}
+    		30% 	{box-shadow: #a94442 0 0 10px 5px;}
+    		40% 	{box-shadow: #a94442 0 0 10px -5px;}
+    		100% 	{box-shadow: #a94442 0 0 10px -5px;}
+    	}
+
+    	@keyframes alertB {
+    		0% 		{box-shadow: #31708f 0 0 10px -5px;}
+    		10% 	{box-shadow: #31708f 0 0 10px 5px;}
+    		20% 	{box-shadow: #31708f 0 0 10px -5px;}
+    		30% 	{box-shadow: #31708f 0 0 10px 5px;}
+    		40% 	{box-shadow: #31708f 0 0 10px -5px;}
+    		100% 	{box-shadow: #31708f 0 0 10px -5px;}
+    	}
+    </style>
+
+	</head>
+	<body>
+		<div class="container">
+			<h3 class="text-center">"Baza Danych Tematów Baz Danych"</h3>
+			<h4 class="text-center">Witaj przybyszu!</h4>
+			<p class="text-center">Myślałeś, że tak po prostu ujrzysz tematy?<br>Pfff... Nie ma tak łatwo. Musisz sam zapytać DBMS o dane, które chcesz uzyskać.<br><strong>Ora Et Labora!</strong></p>
+			<div id="input" class="input-group">
+				<input id="QueryInput" type="text" class="form-control" placeholder="SELECT...." onchange="executeQuery()">
+				<span class="input-group-btn">
+					<button class="btn btn-default" onclick="executeQuery()">Wykonaj</button>
+				</span>
+			</div>
+			<div id="info" class='alert alert-info'>
+				<p>Dane których szukasz znajdują się w bazie o nazwie <strong>BDZMProjects</strong>.</p>
+			</div>
+			<div id="tip" class='alert alert-info alertBlinkB'></div>
+			<div class="panel panel-primary">
+				<div class="panel-heading">Output</div>			
+				<div id="DataBaseOutput"></div>
+			</div>
+		</div>
+	</body>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+	<script>
+
+		var input = null;
+		var output = null;
+		var tips = 0;
+
+		$(document).ready(function(){
+			input = $("#QueryInput");
+			output = $("#DataBaseOutput");
+			showTip(tips);
+		});
+
+		function executeQuery(){
+			console.log("--------------------------------");
+			var query = input.val();
+			if(isValid(query)){
+				var aliases = getAliases(query);
+				var encode = isThereStar(query);
+				var titles = createTitles(query, aliases);
+				if(checkQueryForNextTip(query, tips)){
+					if(tips < 5){
+						showTip(tips);
+						tips++;	
+					}				
+				}
+				askDB(query, titles, encode);
+			}
+		}
+
+		function askDB(query, titles, encode){
+			console.log("[DB]: Asking DB for Query");
+			$.ajax({
+		      url: 'DB.php',
+		      type: 'post',
+		      data: {'query': query, 'titles': titles, 'encode': encode},
+		      success: function(data, status) {
+		        if(data != null) {
+		          output.html(data);
+		        }
+		      },
+		      error: function(xhr, desc, err) {
+		        console.log(xhr);
+		        console.log("Details: " + desc + "\nError:" + err);
+		      }
+		    }); // end ajax call
+		}
+
+		function isValid(query){
+			console.log("[QRY]: ", query);
+			if(query == ""){
+				output.html("<div class='alert alert-info alertBlink' style='margin: 0'>Z pustego to i Salomon nie naleje...</div>");
+				return false;
+			}
+
+			var p1 = /(SELECT).+(FROM).+/ig;
+			var p2 = /(DROP|INSERT|UPDATE|DELETE|JOIN|UNION|CREATE)/ig;
+			var p1test = p1.test(query);
+			var p2test = p2.test(query);
+			console.log("[VAL]: ", p1test, p2test, p1test && !p2test);
+
+			if(!p1test)
+				output.html("<div class='alert alert-danger alertBlink' style='margin: 0'><strong>Eee co?</strong><br>To chyba nie jest poprawne zapytanie...</div>");
+
+			if(p2test)
+				output.html("<div class='alert alert-danger alertBlink' style='margin: 0'><strong>Nieładnie!</strong><br>Zapytanie zawiera niedozwolone słowo kluczowe. </div>");
+
+			return (p1test && !p2test);
+		}		
+
+		function getAliases(query){
+			var aliases = [], matches = [];
+			var regex = [	
+							/\sID\sAS\s([\w'"]*)[\s,]/ig,
+							/\sName\sAS\s([\w'"]*)[\s,]/ig,
+							/\sSurname\sAS\s([\w'"]*)[\s,]/ig,
+							/\sProjectSubject\sAS\s([\w'"]*)[\s,]/ig
+						];
+
+			for(var i=0; i<4; i++){
+				matches = regex[i].exec(query);
+				if(matches != null)
+					aliases.push(matches[1]);
+				else
+					aliases.push(0);
+			}
+			console.log("[ALS]: ", aliases);
+			return aliases;
+		}
+
+		function createTitles(query, aliases){
+			var names = ["ID", "Name", "Surname", "ProjectSubject"];
+			var titles = [];
+			var regex = [	
+							/\sID|\*\s/ig,
+							/\sName|\*\s/ig,
+							/\sSurname|\*\s/ig,
+							/\sProjectSubject|\*\s/ig
+						];
+
+			for(var i=0; i<4; i++){
+				if(regex[i].test(query)){
+					if(aliases[i] == 0)
+						titles.push(names[i]);
+					else
+						titles.push(aliases[i]);
+				}
+			}
+			console.log("[TIT]: ", titles);
+			return titles;
+		}
+
+		function isThereStar(query){
+			var p1 = /\*/ig;
+			var p1test = p1.test(query);
+			console.log("[ENC]: ", p1test);
+			return p1test;
+		}
+
+		function showTip(tipID){
+			var tips = [
+							"Spróbuj zacząć od <strong>SELECT *</strong>. Nie zapomnij o wyborze bazy danych.",
+							"Wygląda na to, że baza danych nie za bardzo lubi operator <strong>*</strong>. Spróbuj zapytać o konkretne kolumny.",
+							"Może dodasz jakieś aliasy? :)",
+							"Dane są słabo czytelne, posortuj je według nazwisk!",
+							"Nice!"
+			];
+
+			$("#tip").hide().show().html("<p><strong>Tip#"+(tipID+1)+"</strong><br>"+tips[tipID]+"</p>");
+
+			$("#tip").removeClass("alertBlink");
+			$("#tip").addClass("alertBlink");
+		}
+
+		function checkQueryForNextTip(query, tip){
+			var p1;
+			if(tip == 0)
+				return true;
+			if(tip == 1){
+			 	p1 = /SELECT\s+\*\s+FROM\s+BDZMProjects/ig;
+			}
+			if(tip == 2){
+			 	p1 = /SELECT\s+(ID|NAME|SURNAME|ProjectSubject)\s+FROM\s+BDZMProjects/ig;
+			}
+			if(tip == 3){
+			 	p1 = /SELECT\s+.*AS.*\s+FROM\s+BDZMProjects/ig;
+			}
+			if(tip == 4){
+			 	p1 = /SELECT\s+.*\s+FROM\s+BDZMProjects.*ORDER BY.*/ig;
+			}
+			
+			var p1test = p1.test(query);
+			console.log("[TIP]: ", p1test);
+			return p1test;
+		}
+
+	</script>
+</html>
+
+
+<!--
+
+
+
+
+DROP TABLE test.BDZMProjects;
+CREATE TABLE test.BDZMProjects(ID int NOT NULL AUTO_INCREMENT, Name text NOT NULL, Surname text NOT NULL, ProjectSubject text, PRIMARY KEY (ID));
+ALTER TABLE test.BDZMProjects CHANGE `Name` `Name` TEXT CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL;
+ALTER TABLE test.BDZMProjects CHANGE `Surname` `Surname` TEXT CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL;
+ALTER TABLE test.BDZMProjects CHANGE `ProjectSubject` `ProjectSubject` TEXT CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL;
+ALTER TABLE test.BDZMProjects AUTO_INCREMENT=0;
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Ukasz",	"Barkowski",	"Więzienie");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Dawid",	"Borzykowski",	"Sportowcy");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Dawid",	"Bubacz",	"Szkółka Leśna");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Mateusz", "Dobrosiński",	"Biblioteka Szkolna");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Roman",	"Dąbal",	"Rozkład Jazdy Kolei");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Adrian",	"Gośka",	"Zbrojownia");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Bartosz",	"Górny",	"Komis Samochodowy");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Ramzes",	"Łagiewski",	"Obsługa Rachunku Bankowego");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Barbara", "Hanusko",	"Baza filmowa");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Aleksander",	"Helik",	"Dziennik Lekcyjny");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Jakub",	"Łucjan",	"PZPN");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Krystian",	"Białaś",	"Zbiornik Wodny");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Krystian",	"Banaszak",	"Gry Sprawnościowe");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Marcin",	"Meeeeeller",	"Wszechświat");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Karol",	"Wiertel",	"Dzielnice Miasta");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Damian",	"Radzymiński",	"Restauracja");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Krystian",	"Wojciechowski",	"Taniec");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Szymon",	"Mitura",	"LoL");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Jakub",	"Miętkiewicz",	"Apteka");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Krystian",	"Matelski",	"Cmentarz");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Adrian",	"Rosiński",	"Wydawnictwo");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Dawid",	"Michalski",	"Armia");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Mateusz ",	"Pawłowski",	"'Kryminologiczna'");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Eryk",	"Majchrzak",	"WoW");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Szymon",	"Wędzikowski",	"Rozkład Jazdy MPK");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Artur",	"Buczyński",	"Szkoła Wyższa");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Arkadiusz",	"Sternalski",	"?");
+INSERT INTO test.BDZMProjects(Name, Surname, ProjectSubject) VALUES ("Miłosz",	"Staszewski",	"?");
+
+
+
+-->
