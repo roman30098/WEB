@@ -65,7 +65,16 @@
 			<div id="info" class='alert alert-info'>
 				<p>Dane których szukasz znajdują się w tabeli o nazwie <strong>BDZMProjects</strong>.</p>
 			</div>
-			<div id="tip" class='alert alert-info alertBlinkB'></div>
+			<div id="tip" class='alert alert-info alertBlinkB'>
+				<div class="row">
+					<div id="tipText" class="col-xs-10">
+						elo
+					</div>
+					<div class="col-xs-2 text-right">
+						<button type="button" class="close" aria-label="Close"><span aria-hidden="true" onclick="noTips()">&times;</span></button>
+					</div>
+				</div>
+			</div>
 			<div class="panel panel-primary">
 				<div class="panel-heading">Output</div>			
 				<div id="DataBaseOutput"></div>
@@ -80,6 +89,9 @@
 		var input = null;
 		var output = null;
 		var tips = 0;
+		var showTitles = 0;
+		var requests = 0;
+		var validRequests = 0;
 
 		$(document).ready(function(){
 			input = $("#QueryInput");
@@ -94,14 +106,17 @@
 				var aliases = getAliases(query);
 				var encode = isThereStar(query);
 				var titles = createTitles(query, aliases);
-				if(checkQueryForNextTip(query, tips)){
-					if(tips < 5){
+				if(tips < 5){
+					if(checkQueryForNextTip(query, tips)){
 						showTip(tips);
 						tips++;	
 					}				
 				}
+				showTableTitles();
 				askDB(query, titles, encode);
+				validRequests++;
 			}
+			requests++;
 		}
 
 		function askDB(query, titles, encode){
@@ -202,9 +217,11 @@
 							"Oto twoje dane:"
 			];
 
-			$("#tip").hide().removeClass("alertBlink");
-			if(tipID < 4)
-				$("#tip").show().html("<p><strong>Tip#"+(tipID+1)+"</strong><br>"+tips[tipID]+"</p>").addClass("alertBlink");
+			$("#tip").hide().removeClass("alertBlinkB");
+			if(tipID < 4){
+				$("#tipText").html("<strong>Tip#"+(tipID+1)+"</strong><br>"+tips[tipID]);
+				$("#tip").show().addClass("alertBlinkB");
+			}
 		}
 
 		function checkQueryForNextTip(query, tip){
@@ -215,7 +232,7 @@
 			 	p1 = /SELECT\s+\*\s+FROM\s+BDZMProjects/ig;
 			}
 			if(tip == 2){
-			 	p1 = /SELECT\s+(ID|NAME|SURNAME|ProjectSubject)\s+FROM\s+BDZMProjects/ig;
+			 	p1 = /SELECT\s+.*(ID|NAME|SURNAME|ProjectSubject).*\s+FROM\s+BDZMProjects/ig;
 			}
 			if(tip == 3){
 			 	p1 = /SELECT\s+.*AS.*\s+FROM\s+BDZMProjects/ig;
@@ -227,6 +244,20 @@
 			var p1test = p1.test(query);
 			console.log("[TIP]: ", p1test);
 			return p1test;
+		}
+
+		function showTableTitles(){
+			if(tips >= 2 && showTitles == 0){
+				$("#info").html( $("#info").html() + "Nazwy kolumn to: <strong>ID, NAME, SURNAME, PROJECTSUBJECT</strong>.");
+				showTitles = 1;
+			}
+			return 0;
+		}
+
+		function noTips(){
+			tips = 5; 
+			showTip(tips);
+			showTableTitles();
 		}
 
 	</script>

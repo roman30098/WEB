@@ -1,10 +1,12 @@
 <?php
 error_reporting(0);
-$serwer = 'mysql.hostinger.pl';
-$uzytkownik = 'u402006295_r300';
-$haslo = 'F5nLZ$RMjb';
+$lh = false;
+$serwer = ($lh)?'localhost':'mysql.hostinger.pl';
+$uzytkownik = ($lh)?'root':'u402006295_r300';
+$baza = ($lh)?'test':'u402006295_rd';
+$haslo = ($lh)?'':'F5nLZ$RMjb';
  
-$conn = new mysqli($serwer, $uzytkownik, $haslo, 'u402006295_rd');
+$conn = new mysqli($serwer, $uzytkownik, $haslo, $baza);
 $conn->set_charset("utf8");
  
 if($conn->connect_error)
@@ -39,7 +41,7 @@ while($row = $result->fetch_row()) {
 if($numberOfColumns > 0){
 	$titles = $_POST['titles'];
 	
-	echo "<table class='table' style='margin: 0'><tr>";
+	echo "<table class='table table-hover' style='margin: 0'><tr>";
 	for($i = 0; $i < $numberOfColumns; $i++){
 		echo "<th>$titles[$i]</th>";
 	}
@@ -56,7 +58,7 @@ function encode($value){
 	$lenght = strlen($value);
 	$encodedChars = array("#", "@", "!", "*", "&", "_", "%", "a", "e", "i", "h", "z", "r", "w", "ł", "k", "x");
 
-	for($i = 0; $i < $lenght/2; $i++){
+	for($i = 0; $i < $lenght/4; $i++){
 		$value[rand(0, $lenght-1)] = $encodedChars[rand(0, 15)];
 	}
 
