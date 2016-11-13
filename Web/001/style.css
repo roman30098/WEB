@@ -23,7 +23,7 @@ body{
     position: absolute;
     top: 50px;
     left: 100px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
     display: block;
     transform: rotate(180deg);
 }
@@ -62,7 +62,7 @@ body{
     position: relative;
     top: -50px;
     left: 0px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
 }
 
 .NavBarNav > li:after{
@@ -73,7 +73,7 @@ body{
     position: relative;
     top: -10px;
     left: 90px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
     transform: rotate(180deg);
 }
 
@@ -121,7 +121,7 @@ article.BigArticleLink:before{
     position: absolute;
     top: 45px;
     left: 45px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
     transform: scale(10, 10);
 }
 
@@ -158,7 +158,7 @@ article.BigArticleLink:before{
     position: absolute;
     top: 10px;
     left: -20px;
-    background-image: url('../corner.svg');
+    background-image: url('corner.svg');
     transform: rotate(180deg) scale(3,3);
 }
 
@@ -208,7 +208,7 @@ article.BigArticleLink:before{
     position: absolute;
     top: 45px;
     left: -55px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
     transform: rotate(180deg) scale(10, 10);
 }
 
@@ -289,7 +289,7 @@ footer:before{
     position: absolute;
     top: 95px;
     left: 70px;
-    background-image: url('../cornerW.svg');
+    background-image: url('cornerW.svg');
     transform: scale(20);
 }
 
@@ -301,6 +301,6 @@ footer:after{
     position: absolute;
     top: 95px;
     left: 20px;
-    background-image: url('../corner.svg');
+    background-image: url('corner.svg');
     transform: scale(20);
 }
