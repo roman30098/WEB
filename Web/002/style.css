@@ -2,7 +2,12 @@
 
 .navBar{
 	height: 50px;
+	width: 100%;
 	background-color: #fff;
+	position: fixed;
+	z-index: 10;
+	top: 0;
+	border-bottom: 2px solid #edefff;
 }
 
 .navBar a{
@@ -45,8 +50,9 @@
 }
 
 .offer{
-	border: 2px solid #eee;
-	box-shadow: 2px 2px 2px 2px #eee;
+	border: 2px solid #fff;
+	box-shadow: 5px 5px 10px 2px #BFBFBE;
+	background-color: #fff;
 }
 
 .offerContent{
@@ -83,5 +89,56 @@
 .footer{
 	background-color: #3c8cff;
 	color: #fff;
-	padding: 10px;
+	padding: 10px 50px;
+}
+
+.opinion{
+	height: 200px;
+}
+
+.ppl{
+	margin: 50px;
+}
+
+.user{
+	font-size: 20px;
+	margin: 0 !important;
+}
+
+.imageP{
+	margin: 25px;
+	border-radius: 100%;
+	width: 150px;
+	height: 150px;
+	float: left;
+	background-size: cover;
+    background-position: center;
+	box-shadow: 5px 5px 10px 2px #BFBFBE;
+}
+
+.quote{
+	line-height: 30px;
+    font-size: 30px;
+    font-style: italic;
+    float: left;
+}
+
+.quote > p{
+	margin: 85px 10px 0 10px;
+}
+
+#pp0{
+	background-image: url("ppl0.jpg");
+}
+
+#pp1{
+	background-image: url("ppl1.jpg");
+}
+
+#pp2{
+	background-image: url("ppl2.jpg");
+}
+
+#pp3{
+	background-image: url("ppl3.jpg");
 }
