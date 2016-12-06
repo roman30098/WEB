@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Quick Sort</title>
+	<link rel="stylesheet" href="quick.css">
+</head>
+<body>
+	<div id="containerThatContainsContainer">
+		<div id="container"></div>
+	</div>
+	<div id="containerThatIsBelowTheContainerThatContainsContainer"></div>
+</body>
+<script src="jquery.js"></script>
+<script>
+
+var tab = [];
+var swaps = [];
+var numbers = [];
+var numbersCount = 10;
+var pointlessSwaps = 0;
+
+var numberBoxWidth = 50;
+var numberBoxMargin = 10;
+var containerColumns = 13;
+var containerRows = 8;
+var containerWidth = 740;
+var containerHeight = 500;
+var container = null;
+
+function recordSwap(a, b){
+	swaps.push([a,b]);
+}
+
+function swap(tab, a, b){
+	var temp = tab[a];
+	tab[a] = tab[b];
+	tab[b] = temp;
+	return 0;
+}
+
+function quickSort(tab, left, right, deep = 0){
+	var tabs = "";
+	for(var i=0; i<deep; i++)
+		tabs += "----";
+	console.log(tabs,"quickSort(", left, right, "); pivot =", Math.round((left+right)/2));
+	if(right <= left){
+		console.log(right, left);
+		return 0;
+	}
+
+	var i = left - 1;
+	var j = right + 1;
+	//Wybór punktu odniesienia
+	var pivot = tab[Math.round((left+right)/2)];
+
+	console.log(tabs,"tab[pivot]:", pivot);
+
+	while(1){
+		while(pivot > tab[++i]);
+
+		while(pivot < tab[--j]);
+
+		if(i <= j){
+			if(tab[i] != tab[j]){
+				var out =  "[]	";
+				for(var k = left; k <= right; k++)
+					out += tab[k] + ", ";
+				
+				swap(tab, i, j);
+				recordSwap(i, j);
+				
+				console.log(tabs,"	",out);
+				out = "=> ";
+				for(var k = left; k <= right; k++)
+					out += tab[k] + ", ";
+				console.log(tabs,"	",out);
+			}else{
+				pointlessSwaps++;
+			}
+		}
+		else
+			break;
+	}
+
+	if(j > left){
+		console.log("%c"+tabs+"> left",'text-shadow: 0px 0px 10px; color: hsl('+deep*32+', 100%, 50%)');
+		quickSort(tab, left, j, deep+1);			
+	}
+	if(i < right){
+		console.log("%c"+tabs+"> right",'text-shadow: 0px 0px 10px; color: hsl('+deep*32+', 100%, 50%)');
+		quickSort(tab, i, right, deep+1);
+	}
+	return tab;
+}
+
+function addNumber(number){
+	var numberPosition = numbers.length;
+	var numberBoxStyle = "left: "+determineNumberBoxPostionOnScreen(numberPosition)+"px; top: "+determineNumberBoxPostionOnScreen(numberPosition, 1)+"px;";
+	numberBoxStyle += "background-color: hsl("+(number*2+20)+", 100%, 50%)";
+	var numberBox = "<div id='n"+numberPosition+"' class='number' style='"+numberBoxStyle+"'>"+number+"</div>";
+	container.append(numberBox);
+	//            Position,       #ID
+	numbers.push([numberPosition, numberPosition]); 
+}
+
+function createRandomNumbers(count, max = 100){
+	numbersCount = count;
+	for(var i=0; i<count; i++)
+		tab.push(Math.round(Math.random()*max));
+}
+
+function determineNumberBoxPostionOnScreen(numberPosition, axis = 0){
+	var column = numberPosition%containerColumns;
+	var row = Math.floor(numberPosition/containerColumns);
+	var positionX = (numberBoxWidth+numberBoxMargin)*column - 2.5;
+	var positionY = (numberBoxWidth+numberBoxMargin)*row - 5;
+
+	//Add align
+	if(row == Math.floor(numbersCount/containerColumns))
+		positionX += (containerWidth - (Math.floor(numbersCount%containerColumns))*(numberBoxWidth+numberBoxMargin))/2;
+	else
+		positionX += (containerWidth - 13*(numberBoxWidth+numberBoxMargin))/2;
+	positionY += (containerHeight - (Math.ceil(numbersCount/containerColumns))*(numberBoxWidth+numberBoxMargin))/2;
+
+	if(axis == 0)
+		return positionX;
+	else
+		return positionY;
+}
+
+function createNumberBoxesFromTab(tab){
+	for(var i=0; i<tab.length; i++)
+		addNumber(tab[i]);
+}
+
+function animateSwap(swapData, duration){
+	var a = swapData[0];
+	var b = swapData[1];
+	swap(numbers, a, b);
+	numbers[a][0] = a;
+	numbers[b][0] = b;
+
+	var styleA = {
+		left: determineNumberBoxPostionOnScreen(a),
+		top: determineNumberBoxPostionOnScreen(a, 1)
+	}
+	var styleB = {
+		left: determineNumberBoxPostionOnScreen(b),
+		top: determineNumberBoxPostionOnScreen(b, 1)
+	}
+
+	$("#n"+numbers[a][1]).css("z-index", a).animate(styleA, duration);
+	$("#n"+numbers[b][1]).css("z-index", b).animate(styleB, duration);
+}
+
+function animateSwapSequence(duration, step = 0){
+	animateSwap(swaps[step], duration);
+	if(step < swaps.length-1){
+		setTimeout(function(){
+			animateSwapSequence(duration, step+1);
+		}, duration/4);
+	}
+	return 0;
+}
+
+$(document).ready( function(){
+	container = $("#container");
+
+	createRandomNumbers(104, 99);
+	createNumberBoxesFromTab(tab);
+	console.log(tab);
+	quickSort(tab, 0, tab.length - 1);
+	console.log(tab);
+
+	setTimeout(function(){
+			animateSwapSequence(1000);
+	}, 2000);
+	
+});
+
+
+</script>
+</html>

@@ -1,0 +1,46 @@
+body{
+	background-color: #efefef;
+	margin: 0;
+	padding: 0;
+	font-family: "Lato", "Arial", sans-serif;
+}
+
+#containerThatContainsContainer{
+	background-color: #fff;
+	margin-top: calc(50vh - 255px)
+}
+
+#containerThatIsBelowTheContainerThatContainsContainer{
+	height: 10px;
+	background-color: #aaa;
+}
+
+#container{
+	background-color: #fff;
+	width: 740px;
+	height: 500px;
+	margin: auto;
+	position: relative;
+}
+
+.number{
+	width: 50px;
+	height: 50px;
+	margin: 10px;
+	line-height: 50px;
+	font-size: 25px;
+	text-align: center;
+	background-color: #eee;
+	position: absolute;
+	border-radius: 10%;
+	box-shadow: 0 5px 0 #aaa;
+}
+
+.number:hover{
+	box-shadow: none;
+	margin-top: 15px;
+}
+
+.clearfix{
+	clear: both;
+}
