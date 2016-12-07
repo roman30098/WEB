@@ -36,6 +36,16 @@ body{
 	box-shadow: 0 5px 0 #aaa;
 }
 
+.pivot{
+	background-color: #fff !important;
+}
+
+.group{
+	position: absolute;
+	height: 10px;
+	background-color: #f0f;
+}
+
 .number:hover{
 	box-shadow: none;
 	margin-top: 15px;

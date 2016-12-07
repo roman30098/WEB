@@ -17,6 +17,7 @@
 
 var tab = [];
 var swaps = [];
+var groups = [];
 var numbers = [];
 var numbersCount = 10;
 var pointlessSwaps = 0;
@@ -29,8 +30,10 @@ var containerWidth = 740;
 var containerHeight = 500;
 var container = null;
 
-function recordSwap(a, b){
-	swaps.push([a,b]);
+var lastRowAlignOffset = 0;
+
+function recordSwap(a, b, pivot){
+	swaps.push([a, b, pivot]);
 }
 
 function swap(tab, a, b){
@@ -45,6 +48,7 @@ function quickSort(tab, left, right, deep = 0){
 	for(var i=0; i<deep; i++)
 		tabs += "----";
 	console.log(tabs,"quickSort(", left, right, "); pivot =", Math.round((left+right)/2));
+	
 	if(right <= left){
 		console.log(right, left);
 		return 0;
@@ -53,7 +57,10 @@ function quickSort(tab, left, right, deep = 0){
 	var i = left - 1;
 	var j = right + 1;
 	//Wybór punktu odniesienia
-	var pivot = tab[Math.round((left+right)/2)];
+	var pivotPoint = Math.round((left+right)/2);
+	var pivot = tab[pivotPoint];
+
+	groups.push([left, right, deep, pivot]);
 
 	console.log(tabs,"tab[pivot]:", pivot);
 
@@ -69,7 +76,7 @@ function quickSort(tab, left, right, deep = 0){
 					out += tab[k] + ", ";
 				
 				swap(tab, i, j);
-				recordSwap(i, j);
+				recordSwap(i, j, pivot);
 				
 				console.log(tabs,"	",out);
 				out = "=> ";
@@ -111,6 +118,10 @@ function createRandomNumbers(count, max = 100){
 		tab.push(Math.round(Math.random()*max));
 }
 
+function calcLastRowAlignOffset(){
+	return (containerWidth - (Math.floor(numbersCount%containerColumns))*(numberBoxWidth+numberBoxMargin))/2;
+}
+
 function determineNumberBoxPostionOnScreen(numberPosition, axis = 0){
 	var column = numberPosition%containerColumns;
 	var row = Math.floor(numberPosition/containerColumns);
@@ -130,11 +141,41 @@ function determineNumberBoxPostionOnScreen(numberPosition, axis = 0){
 		return positionY;
 }
 
+function determineGroupPostionOnScreen(pos, deep, axis = 0){
+	var column = pos%containerColumns;
+	var row = Math.floor(pos/containerColumns)+1;
+	var positionX = (numberBoxWidth+numberBoxMargin)*column + 2.5;
+	var positionY = (numberBoxWidth+numberBoxMargin)*row + 5 + deep*15;
+
+	//Add align
+	positionX += lastRowAlignOffset;
+	positionY += (containerHeight - (Math.ceil(numbersCount/containerColumns))*(numberBoxWidth+numberBoxMargin))/2;
+
+	if(axis == 0)
+		return positionX;
+	else
+		return positionY;
+}
+
 function createNumberBoxesFromTab(tab){
+	lastRowAlignOffset = calcLastRowAlignOffset();
 	for(var i=0; i<tab.length; i++)
 		addNumber(tab[i]);
 }
 
+function createGroupBox(groupData, color = 0){
+	var groupBoxStyle = "left: "+determineGroupPostionOnScreen(groupData[0], groupData[2])+"px; top: "+determineGroupPostionOnScreen(groupData[0], groupData[2], 1)+"px;";
+	groupBoxStyle += "background-color: hsl("+((groupData[2]+color*4)*4+20)+", 100%, 50%); width: "+(groupData[1]-groupData[0]+1)*(numberBoxMargin+numberBoxWidth)+"px;";
+	var groupBox = "<div class='group' style='"+groupBoxStyle+"'></div>";
+	container.append(groupBox);
+}
+
+function createGroupBoxesFromTab(groups){
+	for (var i=0; i<groups.length; i++) {
+		createGroupBox(groups[i], i);
+	}
+}
+ 
 function animateSwap(swapData, duration){
 	var a = swapData[0];
 	var b = swapData[1];
@@ -153,14 +194,15 @@ function animateSwap(swapData, duration){
 
 	$("#n"+numbers[a][1]).css("z-index", a).animate(styleA, duration);
 	$("#n"+numbers[b][1]).css("z-index", b).animate(styleB, duration);
+	//$("#n"+swapData[2]).addClass("pivot");
 }
 
-function animateSwapSequence(duration, step = 0){
+function animateSwapSequence(duration, multiple = 1, step = 0){
 	animateSwap(swaps[step], duration);
 	if(step < swaps.length-1){
 		setTimeout(function(){
-			animateSwapSequence(duration, step+1);
-		}, duration/4);
+			animateSwapSequence(duration, multiple, step+1);
+		}, duration/multiple);
 	}
 	return 0;
 }
@@ -168,14 +210,16 @@ function animateSwapSequence(duration, step = 0){
 $(document).ready( function(){
 	container = $("#container");
 
-	createRandomNumbers(104, 99);
+	createRandomNumbers(10, 99);
 	createNumberBoxesFromTab(tab);
 	console.log(tab);
 	quickSort(tab, 0, tab.length - 1);
 	console.log(tab);
+	if(numbersCount < containerColumns)
+		createGroupBoxesFromTab(groups);
 
 	setTimeout(function(){
-			animateSwapSequence(1000);
+			animateSwapSequence(200, 1);
 	}, 2000);
 	
 });
