@@ -332,7 +332,7 @@ function newVis(elements, duration = 200, delay = 2000, quick = 0){
 	}
 
 	$("#sortType").text(sortType);
-	$("#sortAdditionalData").html("Swaps: "+sortSwaps+"&nbsp;&nbsp;&nbsp;&nbsp;Comparsions: "+sortComparsions);
+	$("#sortAdditionalData").html("Swaps: "+sortSwaps+"&nbsp;&nbsp;&nbsp;&nbsp;Comparsions: "+sortComparsions+"&nbsp;&nbsp;&nbsp;&nbsp;Time: "+(sortComparsions+(sortSwaps*2)));
 		
 	console.log(tab);
 	if(numbersCount < containerColumns)
