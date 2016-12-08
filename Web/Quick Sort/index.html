@@ -7,18 +7,25 @@
 	<link rel="stylesheet" href="quick.css">
 </head>
 <body>
-	<div id="containerThatContainsContainer">
-		<div id="container"></div>
-	</div>
-	<div id="inputContainer">
-		<p class="center">newVis(
-			<input type="text" placeholder="elements" id="valEl" value="10">,
-			<input type="text" placeholder="duration" id="valDu" value="1000">,
-			<input type="text" placeholder="delay" id="valDe" value="1000">,
-			<input type="text" placeholder="atOnce" id="valOn" value="1">,
-			<input type="text" placeholder="quick" id="valQu" value="1">);
-			<button onClick="executeCommand();">Go!</button>
-		</p>
+	<div id="head">
+		<div class="smallContainer center">
+			<h2 id="sortType">-=-</h2>
+		</div>
+		<div id="containerThatContainsContainer">
+			<div id="container"></div>
+		</div>
+		<div class="smallContainer">
+			<p class="center">newVis(
+				<input type="text" placeholder="elements" id="valEl" value="10">,
+				<input type="text" placeholder="duration" id="valDu" value="1000">,
+				<input type="text" placeholder="delay" id="valDe" value="1000">,
+				<input type="text" placeholder="quick" id="valQu" value="1">);
+				<button onClick="executeCommand();">Go!</button>
+			</p>
+		</div>
+		<div class="smallContainer">
+			<p id="sortAdditionalData" class="center">-=-</p>
+		</div>
 	</div>
 </body>
 <script src="jquery.js"></script>
@@ -40,6 +47,11 @@ var containerHeight = 500;
 var container = null;
 
 var lastRowAlignOffset = 0;
+var sortComparsions = 0;
+var sortSwaps = 0;
+var sortType = "";
+var animationStep = 0;
+var animationInterval = null;
 
 function recordSwap(a, b, pivot = 0){
 	swaps.push([a, b, pivot]);
@@ -49,6 +61,7 @@ function swap(tab, a, b){
 	var temp = tab[a];
 	tab[a] = tab[b];
 	tab[b] = temp;
+	sortSwaps++;
 	return 0;
 }
 
@@ -74,9 +87,13 @@ function quickSort(tab, left, right, deep = 0){
 	console.log(tabs,"tab[pivot]:", pivot);
 
 	while(1){
-		while(pivot > tab[++i]);
+		while(pivot > tab[++i]){
+			sortComparsions++;
+		}
 
-		while(pivot < tab[--j]);
+		while(pivot < tab[--j]){
+			sortComparsions++;
+		}
 
 		if(i <= j){
 			if(tab[i] != tab[j]){
@@ -118,8 +135,37 @@ function bubbleSort(tab){
 				swap(tab, j, j+1);
 				recordSwap(j, j+1);
 			}
+			sortComparsions++;
 		}
 	}
+}
+
+function selectionSort(items){
+
+    var len = items.length,
+        min;
+
+    for (i=0; i < len; i++){
+
+        //set minimum to this position
+        min = i;
+
+        //check the rest of the array to see if anything is smaller
+        for (j=i+1; j < len; j++){
+            if (items[j] < items[min]){
+                min = j;
+            }
+            sortComparsions++;
+        }
+
+        //if the minimum isn't in the position, swap it
+        if (i != min){
+            swap(items, i, min);
+            recordSwap(i, min);
+        }
+    }
+
+    return items;
 }
 
 function addNumber(number){
@@ -217,13 +263,12 @@ function animateSwap(swapData, duration){
 	$("#n"+numbers[b][1]).css("z-index", b).animate(styleB, duration);
 }
 
-function animateSwapSequence(duration, multiple = 1, step = 0){
-	animateSwap(swaps[step], duration);
-	if(step < swaps.length-1){
-		setTimeout(function(){
-			animateSwapSequence(duration, multiple, step+1);
-		}, duration/multiple);
-	}
+function animateSwapSequence(duration){
+	animateSwap(swaps[animationStep], duration);
+	if(animationStep < swaps.length-1)
+		animationStep++;
+	else
+		clearInterval(animationInterval);
 	return 0;
 }
 
@@ -258,27 +303,43 @@ function turboAnim(step){
 	}
 }
 
-function newVis(elements, duration = 200, delay = 2000, atOnce = 1, quick = true){
+function newVis(elements, duration = 200, delay = 2000, quick = 0){
 	tab = [];
 	swaps = [];
 	numbers = [];
 	groups = [];
 	numbersCount = 0;
 	container.html("");
+	sortComparsions = 0;
+	sortSwaps = 0;
+	clearInterval(animationInterval);
+	animationStep = 0;
 
 	createRandomNumbers(elements, 50);
 	createNumberBoxesFromTab(tab);
 	console.log(tab);
-	if(quick == false)
-		bubbleSort(tab);
-	else
+	if(quick == 0){
+		sortType = "Quick Sort";
 		quickSort(tab, 0, tab.length - 1);
+	}
+	else if(quick == 1){
+		sortType = "Selection Sort";
+		selectionSort(tab);
+	}
+	else{
+		sortType = "Bubble Sort";
+		bubbleSort(tab);
+	}
+
+	$("#sortType").text(sortType);
+	$("#sortAdditionalData").html("Swaps: "+sortSwaps+"&nbsp;&nbsp;&nbsp;&nbsp;Comparsions: "+sortComparsions);
+		
 	console.log(tab);
 	if(numbersCount < containerColumns)
 		createGroupBoxesFromTab(groups);
 
-	setTimeout(function(){
-			animateSwapSequence(duration, atOnce);
+	animationInterval = setInterval(
+		function(){ animateSwapSequence(duration)
 	}, delay);
 }
 
@@ -290,13 +351,12 @@ function executeCommand(){
 	var elements = parseInt($("#valEl").val());
 	var duration = parseInt($("#valDu").val());
 	var delay = parseInt($("#valDe").val());
-	var atOnce = parseInt($("#valOn").val());
 	var quick = parseInt($("#valQu").val());
 
-	if(elements >= 2 && duration > 0 && delay >= 0 && atOnce >= 1)
-		newVis(elements, duration, delay, atOnce, quick);
+	if(elements >= 2 && duration > 0 && delay >= 0)
+		newVis(elements, duration, delay, quick);
 	else
-		console.log("Error:", elements, duration, delay, atOnce, quick);
+		console.log("Error:", elements, duration, delay, quick);
 }
 
 </script>

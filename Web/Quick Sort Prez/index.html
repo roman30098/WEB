@@ -55,6 +55,37 @@
 			<p class="center">Algorytm następnie powtarza poprzednie kroki dla każdego podproblemu.</p>
 		</article>
 
+		<article class="flexi">
+			<h1>Implementacja JS</h1>
+<pre><code class="language-javascript">function quickSort(tab, left, right){
+	if(right <= left)
+		return 0;
+
+	var i = left - 1;
+	var j = right + 1;
+	var pivotPoint = Math.round((left+right)/2);
+	var pivot = tab[pivotPoint];
+	while(1){
+		while(pivot > tab[++i]);
+
+		while(pivot < tab[--j]);
+
+		if(i <= j)
+			swap(tab, i, j);
+		else
+			break;
+	}
+
+	if(j > left)
+		quickSort(tab, left, j);			
+	if(i < right)
+		quickSort(tab, i, right);
+
+	return tab;
+}
+</code></pre>
+		</article>
+
 		<article>
 			<h1>Ta prezentacja nie powstałaby bez:</h1>
 			<img class="center" style="width: 50em" src="logos.png">
@@ -68,7 +99,7 @@
 
 //Global Settings
 var screenMargins = 30;
-var startScreen = 0;
+var startScreen = 5;
 
 //Other Globals
 var screensCount, screenWidth, screenHeight, boardWidth, boardHeight;
@@ -104,7 +135,7 @@ function constrain(min, val, max){
 	if(val < min)
 		return min;
 	if(val > max)
-		return max;
+		return min;
 	return val;
 }
 
@@ -120,7 +151,7 @@ function resize(){
 
 function setCurrentScreen(a){
 	currentScreen += a;
-	currentScreen = constrain(0, currentScreen, screensCount - 1)
+	currentScreen = constrain(0, currentScreen, screensCount-1);
 
     var newTransform = -screenWidth * currentScreen;
 	var name = $("article:eq("+currentScreen+") > h1:first").text();
@@ -161,6 +192,10 @@ $(document).ready( function() {
 $(window).resize(function() {
 	resize();
  	console.log(window.innerWidth + " x " + window.innerHeight);
+});
+
+$(slider).click(function(){
+	setCurrentScreen(1);
 });
 
 </script>
