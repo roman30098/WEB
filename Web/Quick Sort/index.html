@@ -10,7 +10,16 @@
 	<div id="containerThatContainsContainer">
 		<div id="container"></div>
 	</div>
-	<div id="containerThatIsBelowTheContainerThatContainsContainer"></div>
+	<div id="inputContainer">
+		<p class="center">newVis(
+			<input type="text" placeholder="elements" id="valEl" value="10">,
+			<input type="text" placeholder="duration" id="valDu" value="1000">,
+			<input type="text" placeholder="delay" id="valDe" value="1000">,
+			<input type="text" placeholder="atOnce" id="valOn" value="1">,
+			<input type="text" placeholder="quick" id="valQu" value="1">);
+			<button onClick="executeCommand();">Go!</button>
+		</p>
+	</div>
 </body>
 <script src="jquery.js"></script>
 <script>
@@ -32,7 +41,7 @@ var container = null;
 
 var lastRowAlignOffset = 0;
 
-function recordSwap(a, b, pivot){
+function recordSwap(a, b, pivot = 0){
 	swaps.push([a, b, pivot]);
 }
 
@@ -102,10 +111,21 @@ function quickSort(tab, left, right, deep = 0){
 	return tab;
 }
 
+function bubbleSort(tab){
+	for(var i=0; i<tab.length - 1; i++){
+		for(var j=0; j<tab.length - i - 1; j++){
+			if(tab[j] > tab[j+1]){
+				swap(tab, j, j+1);
+				recordSwap(j, j+1);
+			}
+		}
+	}
+}
+
 function addNumber(number){
 	var numberPosition = numbers.length;
 	var numberBoxStyle = "left: "+determineNumberBoxPostionOnScreen(numberPosition)+"px; top: "+determineNumberBoxPostionOnScreen(numberPosition, 1)+"px;";
-	numberBoxStyle += "background-color: hsl("+(number*2+20)+", 100%, 50%)";
+	numberBoxStyle += "background-color: hsl("+(number*4+20)+", 100%, 50%)";
 	var numberBox = "<div id='n"+numberPosition+"' class='number' style='"+numberBoxStyle+"'>"+number+"</div>";
 	container.append(numberBox);
 	//            Position,       #ID
@@ -114,6 +134,7 @@ function addNumber(number){
 
 function createRandomNumbers(count, max = 100){
 	numbersCount = count;
+	//tab = [10, 3, 1, 2, 9, 7, 15];
 	for(var i=0; i<count; i++)
 		tab.push(Math.round(Math.random()*max));
 }
@@ -194,7 +215,6 @@ function animateSwap(swapData, duration){
 
 	$("#n"+numbers[a][1]).css("z-index", a).animate(styleA, duration);
 	$("#n"+numbers[b][1]).css("z-index", b).animate(styleB, duration);
-	//$("#n"+swapData[2]).addClass("pivot");
 }
 
 function animateSwapSequence(duration, multiple = 1, step = 0){
@@ -207,23 +227,77 @@ function animateSwapSequence(duration, multiple = 1, step = 0){
 	return 0;
 }
 
-$(document).ready( function(){
-	container = $("#container");
+function turboAnim(step){
+	var i = 1;
+	if(step == i++) $("#n3").addClass("pivot");
+	if(step == i++) createGroupBox([0, 6, 0], 0);
+	if(step == i++) animateSwap(swaps[0], 2000);
+	if(step == i++) animateSwap(swaps[1], 2000);
+	if(step == i++) $("#n3").removeClass("pivot");
+	if(step == i++) createGroupBox([0, 1, 1], 10);
+	if(step == i++) createGroupBox([2, 6, 1], 20);
+	if(step == i++) $("#n2").addClass("pivot");
+	if(step == i++) animateSwap(swaps[2], 2000);
+	if(step == i++) $("#n2").removeClass("pivot");
+	if(step == i++) $("#n4").addClass("pivot");
+	if(step == i++) animateSwap(swaps[3], 2000);
+	if(step == i++) $("#n4").removeClass("pivot");
+	if(step == i++) createGroupBox([2, 3, 2], 30);
+	if(step == i++) createGroupBox([5, 6, 2], 40);
+	if(step == i++) $("#n3").addClass("pivot");
+	if(step == i++) animateSwap(swaps[4], 2000);
+	if(step == i++) $("#n3").removeClass("pivot");
+	if(step == i++) $("#n6").addClass("pivot");
+	if(step == i++) animateSwap(swaps[5], 2000);
+	if(step == i++) $("#n6").removeClass("pivot");
 
-	createRandomNumbers(10, 99);
+	if(step < 15){
+		setTimeout(function(){
+				turboAnim(step+1);
+		}, 2000);
+	}
+}
+
+function newVis(elements, duration = 200, delay = 2000, atOnce = 1, quick = true){
+	tab = [];
+	swaps = [];
+	numbers = [];
+	groups = [];
+	numbersCount = 0;
+	container.html("");
+
+	createRandomNumbers(elements, 50);
 	createNumberBoxesFromTab(tab);
 	console.log(tab);
-	quickSort(tab, 0, tab.length - 1);
+	if(quick == false)
+		bubbleSort(tab);
+	else
+		quickSort(tab, 0, tab.length - 1);
 	console.log(tab);
 	if(numbersCount < containerColumns)
 		createGroupBoxesFromTab(groups);
 
 	setTimeout(function(){
-			animateSwapSequence(200, 1);
-	}, 2000);
-	
+			animateSwapSequence(duration, atOnce);
+	}, delay);
+}
+
+$(document).ready( function(){
+	container = $("#container");
 });
 
+function executeCommand(){
+	var elements = parseInt($("#valEl").val());
+	var duration = parseInt($("#valDu").val());
+	var delay = parseInt($("#valDe").val());
+	var atOnce = parseInt($("#valOn").val());
+	var quick = parseInt($("#valQu").val());
+
+	if(elements >= 2 && duration > 0 && delay >= 0 && atOnce >= 1)
+		newVis(elements, duration, delay, atOnce, quick);
+	else
+		console.log("Error:", elements, duration, delay, atOnce, quick);
+}
 
 </script>
 </html>

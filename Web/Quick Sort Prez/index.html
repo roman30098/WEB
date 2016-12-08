@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Prez3.0</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="style.css">
+	<script src="jquery.js"></script>
+
+	<!-- Code Highlighter -->
+	<link rel="stylesheet" href="CodeHighlight/prism.css">
+	<script src="CodeHighlight/prism.js"></script>
+</head>
+<body id="body">
+	<div id="screenSize">0</div>
+	<div id="pageNumber">0</div>
+	<div id="pageDesc">0</div>
+	<div class="slider" id="slider">
+		<article id="start" class="flexi">
+			<h2>Algorytmy Sortujące</h2>
+			<h1>Quick Sort</h1>
+			<h3>[Sortowanie szybkie]</h3>
+			<p style="text-align: center; color: #999">&copy Roman Dąbal 2016 &copy</p>
+		</article>
+		<article class="flexi">
+			<h1>Quick Sort</h1>
+			<p class="center">Quick Sort to popularny i chętnie implementowany algorytm sortujący. Wyróżnia go <b>wydajność</b> i <b>prostota implementacji</b>.</p>
+			<p class="center">Sortowanie tym algorytmem opiera się o metodę <b>"dziel i zwyciężaj"</b>. Polega ona na rozbicu głównego problemu na podproblemy.</p>
+			<img src="quicksort.gif" class="center">
+		</article>
+
+		<article class="flexi">
+			<h1>Złożoność obliczeniowa</h1>
+			<p class="center">Średnia złożoność obliczeniowa:</p>
+			<b><h2>O(n log n)</h2></b>
+			<p class="center">Pesymistyczna złożność obliczeniowa:</p>
+			<b><h2>O(n<sup>2</sup>)</h2></b>
+			<p class="center">(Różni się w zależności od wariantu algorytmu)</p>
+			<img src="000.gif" alt="" class="center">
+		</article>
+
+		<article class="flexi">
+			<h1>Zasada działania</h1>
+			<img src="001.gif" alt="" class="center">
+			<p class="center">Na początek wybierany jest jeden punkt tablicy określany jako <b>pivot</b>.<br>Może być on dowolnym elementem tablicy. Dodatkowo tworzone są parametry <b>i</b> oraz <b>j</b> wskazujące elementy tabeli. </p>
+			<p class="center"><b>Upraszczając:</b><br>Elementy większe od punktu <b>pivot</b> wędrują na prawo, mniejsze na lewo.<br>Podmienia się tylko i wyłącznie parami (tylko kiedy znajdziemy elementy po dwóch stronach pivot)</p>
+		</article>
+
+		<article class="flexi">
+			<h1>Zasada działania</h1>
+			<img src="002.gif" alt="" class="center">
+			<p class="center">Następnie algorytm dzieli promblem na dwa mniejsze:</p>
+			<b class="center">Elementy mniejsze lub równe od pivot i większe od pivot.</b>
+			<p class="center">W tym wypadku pivot'em zerowego poziomu była liczba 2. Powstały więc dwa podproblemy:
+			<br><br><b>tab[0, 1]</b> (2, 1) oraz <b>tab[2,6]</b> (3, 10, 9, 7, 15)</p>
+			<p class="center">Algorytm następnie powtarza poprzednie kroki dla każdego podproblemu.</p>
+		</article>
+
+		<article>
+			<h1>Ta prezentacja nie powstałaby bez:</h1>
+			<img class="center" style="width: 50em" src="logos.png">
+		</article>
+		<div class="clear"></div>
+	</div>
+</body>
+
+
+<script>
+
+//Global Settings
+var screenMargins = 30;
+var startScreen = 0;
+
+//Other Globals
+var screensCount, screenWidth, screenHeight, boardWidth, boardHeight;
+var currentScreen = 0;
+
+document.onkeydown = function(e) {
+    switch (e.keyCode) {
+        case 37: //Left
+        	setCurrentScreen(-1);
+            break;
+        case 39: //Right
+        	setCurrentScreen(1);
+            break;
+        case 38: //Up
+        	setFontSize(1);
+        	break;
+        case 40: //Down
+        	setFontSize(-1);
+        	break;
+        case 80: //P
+        	togglePageNumber();
+        	break;
+        case 82: //R
+        	resize();
+        	break;
+        case 83: //S
+        	toggleScreenSize();
+        	break;
+    }
+};
+
+function constrain(min, val, max){
+	if(val < min)
+		return min;
+	if(val > max)
+		return max;
+	return val;
+}
+
+function resize(){
+	screenWidth = window.innerWidth;
+	screenHeight = window.innerHeight;
+	boardWidth = screenWidth - screenMargins * 2;
+	boardHeight = screenHeight - screenMargins * 2;
+	$("article").css({"width": boardWidth, "height": boardHeight});
+	$("#screenSize").text(screenWidth + " x " + screenHeight);
+	setCurrentScreen(0);
+}
+
+function setCurrentScreen(a){
+	currentScreen += a;
+	currentScreen = constrain(0, currentScreen, screensCount - 1)
+
+    var newTransform = -screenWidth * currentScreen;
+	var name = $("article:eq("+currentScreen+") > h1:first").text();
+	$("#pageNumber").text(currentScreen + " / " + (screensCount - 1));
+	$("#pageDesc").text(name);
+	setTranslate(document.getElementById("slider"), newTransform);
+}
+
+function setTranslate(object, val) {
+  object.style["-webkit-transform"] = "translateX("+ val + "px)";
+  object.style["-moz-transform"] = "translateX(" + val + "px)";
+  object.style["-ms-transform"] = "translateX(" + val + "px)";
+  object.style["-o-transform"] = "translateX(" + val + "px)";
+  object.style["transform"] = "translateX(-" + val + "px)";
+}
+
+function toggleScreenSize(){
+	$("#screenSize").toggleClass("screenSizeVisable");
+}
+
+function togglePageNumber(){
+	$("#pageNumber").toggleClass("pageNumberVisable");
+	$("#pageDesc").toggleClass("pageDescVisable");
+}
+
+function setFontSize(a){
+	var size = $("body").css("font-size");
+	size = parseInt(size.slice(0, -2)) + a;
+	$("body").css("font-size", size+"px");
+}
+
+$(document).ready( function() {
+	screensCount = $("article").length;
+	currentScreen = startScreen;
+	resize();
+});
+
+$(window).resize(function() {
+	resize();
+ 	console.log(window.innerWidth + " x " + window.innerHeight);
+});
+
+</script>
+</html>

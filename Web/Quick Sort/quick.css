@@ -7,12 +7,8 @@ body{
 
 #containerThatContainsContainer{
 	background-color: #fff;
-	margin-top: calc(50vh - 255px)
-}
-
-#containerThatIsBelowTheContainerThatContainsContainer{
-	height: 10px;
-	background-color: #aaa;
+	margin-top: calc(50vh - 255px);
+	border-bottom: 10px solid #aaa;
 }
 
 #container{
@@ -22,6 +18,16 @@ body{
 	margin: auto;
 	position: relative;
 }
+
+#inputContainer{
+	background-color: #fff;
+	width: 475px;
+	padding: 2px;
+	margin: 10px auto;
+	position: relative;
+	border-bottom: 10px solid #aaa;
+}
+
 
 .number{
 	width: 50px;
@@ -37,7 +43,9 @@ body{
 }
 
 .pivot{
-	background-color: #fff !important;
+	background-color: #eee !important;
+	color: #111 !important;
+	margin-top: 5px;
 }
 
 .group{
@@ -51,6 +59,33 @@ body{
 	margin-top: 15px;
 }
 
+input{
+	border: none;
+	width: 60px;
+	text-align: center;
+}
+
+button{
+	border: none;
+	position: relative;
+	top: -5px;
+	margin-left: 10px;
+	padding: 5px;
+	background-color: #00ff2b;
+	box-shadow: 0 5px 0 #aaa;
+}
+
+button:hover{
+	top: 0px;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+.center{
+	text-align: center;
+}
+
 .clearfix{
 	clear: both;
 }
+
