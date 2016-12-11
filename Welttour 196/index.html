@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Bootstrap Tutorial</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+
+	<style>
+		#container{
+			max-width: 400px;
+			min-width: 150px;
+			height: 190px;
+			padding: 10px;
+			margin: auto;
+			margin-top: calc(50vh - 95px);
+			box-shadow: #d0d0d0 0 0 50px 10px;
+		    background-color: #fbfbfb;
+		    border-radius: 10px;
+		}
+	</style>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+	<script src="js/bootstrap.js"></script>
+</head>
+<body>
+	<div id="container">
+		<input id="0" type="text" class="form-control has-success" placeholder="Slowo" >
+		<div class="input-group">
+			<span class="input-group-addon" id="a1">X</span>
+			<input id="1" type="text" class="form-control" placeholder="Infinitiv" onkeyup="check()">
+		</div>
+		<div class="input-group">
+			<span class="input-group-addon" id="a2">X</span>
+			<input id="2" type="text" class="form-control" placeholder="Prateritum" onkeyup="check()">
+		</div>
+		<div class="input-group">
+			<span class="input-group-addon" id="a3">X</span>
+			<input id="3" type="text" class="form-control" placeholder="Partizip Prefekt" onkeyup="check()">
+		</div>
+		<input id="4" type="text" class="form-control" placeholder="PKT">
+	</div>
+</body>
+
+<script>
+	var data = [["piec", "backen", "backte", "gebacken"],
+				["zaczynać", "beginnen", "begann", "begonnen"],
+				["oferować", "bieten", "bot", "geboten"],
+				["prosić", "bitten", "bat", "gebeten"],
+				["zostawać", "bleiben", "blieb", "geblieben"],
+				["przynosić", "bringen", "brachte", "gebracht"],
+				["myśleć", "denken", "dachte", "gedacht"],
+				["jeść", "essen", "aB", "gegessen"],
+				["jechać", "fahren", "fuhr", "gefahren"],
+				["upadać", "fallen", "fiel", "gefallen"],
+				["znajdować", "finden", "fand", "gefunden"],
+				["latać", "fliegen", "glof", "geflogen"],
+				["dawać", "geben", "gab", "gegeben"],
+				["iść", "gehen", "ging", "gegangen"],
+				["mieć", "haben", "hatte", "gehabt"],
+				["trzymać", "halten", "hielt", "gehalten"],
+				["wisieć", "hangen", "hing", "gehangen"],
+				["pomagać", "helfen", "half", "geholfen"],
+				["przychodzić", "kommen", "kam", "gekommen"],
+				["móc, umieć", "konnen", "konnte", "gekonnt"],
+				["czytać", 	"lesen", 	"las", 	"gelesen"],
+				["brać",	"nehmen",	"nahm", "genommen"],
+				["wołać", "rufen", "rief", "gerufen"],
+				["spać", "schlafen", "schlief", "geschlafen"],
+				["bić", "schlagen", "schlug", "geschlagen"],
+				["pisać", "schreiben", "schrieb", "geschreiben"],
+				["krzyczeć", "schreien", "schrie", "geschrien"],
+				["pływać", "schwimmen", "schwamm", "geschwommen"],
+				["widzieć", "sehen", "sah", "gesehen"],
+				["być", "sein", "war", "gewesen"],
+				["śpiewać", "singen", "sang", "gesungen"],
+				["siedzieć", "sitzen", "sass", "gesessen"],
+				["mówić", "sprechen", "sprach", "gesprochen"],
+				["skakać", "springen", "sprang", "gesprungen"],
+				["stać", "stehen", "stand", "gestanden"],
+				["nosić", "tragen", "trug", "getragen"],
+				["spotykać", "treffen", "traf", "getroffen"],
+				["pić", "trinken", "trank", "getrunken"],
+				["tracić", "verlieren", "verlor", "verloren"],
+				["myć", "waschen", "wusch", "gewaschen"]];
+
+	var los = 0;
+	var p0 = document.getElementById("0");
+	var p1 = document.getElementById("1");
+	var p2 = document.getElementById("2");
+	var p3 = document.getElementById("3");
+	var p4 = document.getElementById("4");
+
+	var a1 = document.getElementById("a1");
+	var a2 = document.getElementById("a2");
+	var a3 = document.getElementById("a3");
+
+	var pkt = -1;
+
+	function check(){
+		if(p1.value == data[los][1])
+			a1.textContent = "K";
+		else
+			a1.textContent = "X";
+		if(p2.value == data[los][2])
+			a2.textContent = "K";
+		else
+			a2.textContent = "X";
+		if(p3.value == data[los][3])
+			a3.textContent = "K";
+		else
+			a3.textContent = "X";
+		if(p1.value == data[los][1] && p2.value == data[los][2] && p3.value == data[los][3]){
+			random();
+			p4.value = "Pkt: "+pkt;
+		}
+		console.log("check");
+	}
+
+	function random(){
+		los = Math.floor(Math.random()*5)+0;
+		p0.value = (los+1) +": "+data[los][0];
+		p1.value = "";
+		p2.value = "";
+		p3.value = "";
+		a1.textContent = "X";
+		a2.textContent = "X";
+		a3.textContent = "X";
+		p1.focus();
+		pkt++;
+	}
+
+	random();
+</script>
+
+</html>
+
