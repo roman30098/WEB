@@ -10,10 +10,10 @@
 		#container{
 			max-width: 400px;
 			min-width: 150px;
-			height: 190px;
+			height: 196px;
 			padding: 10px;
 			margin: auto;
-			margin-top: calc(50vh - 95px);
+			margin-top: calc(50vh - 98px);
 			box-shadow: #d0d0d0 0 0 50px 10px;
 		    background-color: #fbfbfb;
 		    border-radius: 10px;
@@ -25,100 +25,176 @@
 </head>
 <body>
 	<div id="container">
+		<div class="progress" style="margin: 0">
+			<div id="okW" class="progress-bar progress-bar-info" role="progressbar" style="width:0%"></div>
+			<div id="badW" class="progress-bar progress-bar-warning" role="progressbar" style="width:0%"></div>
+		</div>
 		<input id="0" type="text" class="form-control has-success" placeholder="Slowo" >
 		<div class="input-group">
 			<span class="input-group-addon" id="a1">X</span>
-			<input id="1" type="text" class="form-control" placeholder="Infinitiv" onkeyup="check()">
+			<input id="1" type="text" class="form-control" placeholder="Infinitiv" onchange="check(0)">
 		</div>
 		<div class="input-group">
 			<span class="input-group-addon" id="a2">X</span>
-			<input id="2" type="text" class="form-control" placeholder="Prateritum" onkeyup="check()">
+			<input id="2" type="text" class="form-control" placeholder="Prateritum" onchange="check(1)">
 		</div>
 		<div class="input-group">
 			<span class="input-group-addon" id="a3">X</span>
-			<input id="3" type="text" class="form-control" placeholder="Partizip Prefekt" onkeyup="check()">
+			<input id="3" type="text" class="form-control" placeholder="Partizip Prefekt" onchange="check(2)">
 		</div>
-		<input id="4" type="text" class="form-control" placeholder="PKT">
+		<div class="progress">
+			<div id="ok" class="progress-bar progress-bar-success" role="progressbar" style="width:0%"></div>
+			<div id="bad" class="progress-bar progress-bar-danger" role="progressbar" style="width:0%"></div>
+		</div>
 	</div>
 </body>
 
 <script>
-	var data = [["piec", "backen", "backte", "gebacken"],
-				["zaczynać", "beginnen", "begann", "begonnen"],
-				["oferować", "bieten", "bot", "geboten"],
-				["prosić", "bitten", "bat", "gebeten"],
-				["zostawać", "bleiben", "blieb", "geblieben"],
-				["przynosić", "bringen", "brachte", "gebracht"],
-				["myśleć", "denken", "dachte", "gedacht"],
-				["jeść", "essen", "aB", "gegessen"],
-				["jechać", "fahren", "fuhr", "gefahren"],
-				["upadać", "fallen", "fiel", "gefallen"],
-				["znajdować", "finden", "fand", "gefunden"],
-				["latać", "fliegen", "glof", "geflogen"],
-				["dawać", "geben", "gab", "gegeben"],
-				["iść", "gehen", "ging", "gegangen"],
-				["mieć", "haben", "hatte", "gehabt"],
-				["trzymać", "halten", "hielt", "gehalten"],
-				["wisieć", "hangen", "hing", "gehangen"],
-				["pomagać", "helfen", "half", "geholfen"],
-				["przychodzić", "kommen", "kam", "gekommen"],
-				["móc, umieć", "konnen", "konnte", "gekonnt"],
-				["czytać", 	"lesen", 	"las", 	"gelesen"],
-				["brać",	"nehmen",	"nahm", "genommen"],
-				["wołać", "rufen", "rief", "gerufen"],
-				["spać", "schlafen", "schlief", "geschlafen"],
-				["bić", "schlagen", "schlug", "geschlagen"],
-				["pisać", "schreiben", "schrieb", "geschreiben"],
-				["krzyczeć", "schreien", "schrie", "geschrien"],
-				["pływać", "schwimmen", "schwamm", "geschwommen"],
-				["widzieć", "sehen", "sah", "gesehen"],
-				["być", "sein", "war", "gewesen"],
-				["śpiewać", "singen", "sang", "gesungen"],
-				["siedzieć", "sitzen", "sass", "gesessen"],
-				["mówić", "sprechen", "sprach", "gesprochen"],
-				["skakać", "springen", "sprang", "gesprungen"],
-				["stać", "stehen", "stand", "gestanden"],
-				["nosić", "tragen", "trug", "getragen"],
-				["spotykać", "treffen", "traf", "getroffen"],
-				["pić", "trinken", "trank", "getrunken"],
-				["tracić", "verlieren", "verlor", "verloren"],
-				["myć", "waschen", "wusch", "gewaschen"]];
+	var data = [["piec", "backen", "backte", "gebacken", 0, 0],
+				["zaczynać", "beginnen", "begann", "begonnen", 0, 0],
+				["oferować", "bieten", "bot", "geboten", 0, 0],
+				["prosić", "bitten", "bat", "gebeten", 0, 0],
+				["zostawać", "bleiben", "blieb", "geblieben", 0, 0],
+				["przynosić", "bringen", "brachte", "gebracht", 0, 0],
+				["myśleć", "denken", "dachte", "gedacht", 0, 0],
+				["jeść", "essen", "ab", "gegessen", 0, 0],
+				["jechać", "fahren", "fuhr", "gefahren", 0, 0],
+				["upadać", "fallen", "fiel", "gefallen", 0, 0],
+				["znajdować", "finden", "fand", "gefunden", 0, 0],
+				["latać", "fliegen", "glof", "geflogen", 0, 0],
+				["dawać", "geben", "gab", "gegeben", 0, 0],
+				["iść", "gehen", "ging", "gegangen", 0, 0],
+				["mieć", "haben", "hatte", "gehabt", 0, 0],
+				["trzymać", "halten", "hielt", "gehalten", 0, 0],
+				["wisieć", "hangen", "hing", "gehangen", 0, 0],
+				["pomagać", "helfen", "half", "geholfen", 0, 0],
+				["przychodzić", "kommen", "kam", "gekommen", 0, 0],
+				["móc, umieć", "konnen", "konnte", "gekonnt", 0, 0],
+				["czytać", 	"lesen", 	"las", 	"gelesen", 0, 0],
+				["brać",	"nehmen",	"nahm", "genommen", 0, 0],
+				["wołać", "rufen", "rief", "gerufen", 0, 0],
+				["spać", "schlafen", "schlief", "geschlafen", 0, 0],
+				["bić", "schlagen", "schlug", "geschlagen", 0, 0],
+				["pisać", "schreiben", "schrieb", "geschreiben", 0, 0],
+				["krzyczeć", "schreien", "schrie", "geschrien", 0, 0],
+				["pływać", "schwimmen", "schwamm", "geschwommen", 0, 0],
+				["widzieć", "sehen", "sah", "gesehen", 0, 0],
+				["być", "sein", "war", "gewesen", 0, 0],
+				["śpiewać", "singen", "sang", "gesungen", 0, 0],
+				["siedzieć", "sitzen", "sass", "gesessen", 0, 0],
+				["mówić", "sprechen", "sprach", "gesprochen", 0, 0],
+				["skakać", "springen", "sprang", "gesprungen", 0, 0],
+				["stać", "stehen", "stand", "gestanden", 0, 0],
+				["nosić", "tragen", "trug", "getragen", 0, 0],
+				["spotykać", "treffen", "traf", "getroffen", 0, 0],
+				["pić", "trinken", "trank", "getrunken", 0, 0],
+				["tracić", "verlieren", "verlor", "verloren", 0, 0],
+				["myć", "waschen", "wusch", "gewaschen", 0, 0]];
 
 	var los = 0;
 	var p0 = document.getElementById("0");
 	var p1 = document.getElementById("1");
 	var p2 = document.getElementById("2");
 	var p3 = document.getElementById("3");
-	var p4 = document.getElementById("4");
 
 	var a1 = document.getElementById("a1");
 	var a2 = document.getElementById("a2");
 	var a3 = document.getElementById("a3");
 
 	var pkt = -1;
+	var ok = 0;
+	var bad = 0;
 
-	function check(){
-		if(p1.value == data[los][1])
-			a1.textContent = "K";
-		else
-			a1.textContent = "X";
-		if(p2.value == data[los][2])
-			a2.textContent = "K";
-		else
-			a2.textContent = "X";
-		if(p3.value == data[los][3])
-			a3.textContent = "K";
-		else
-			a3.textContent = "X";
-		if(p1.value == data[los][1] && p2.value == data[los][2] && p3.value == data[los][3]){
-			random();
-			p4.value = "Pkt: "+pkt;
+	function check(input){
+		if(input == 0){
+			if(p1.value.toLowerCase() == data[los][1]){
+				a1.textContent = "K";
+				data[los][4]++;
+				ok++;
+				p2.focus();
+			}else{
+				a1.textContent = "X";
+				data[los][5]++;
+				bad++;
+			}
 		}
-		console.log("check");
+		if(input == 1){
+			if(p2.value.toLowerCase() == data[los][2]){
+				a2.textContent = "K";
+				data[los][4]++;
+				ok++;
+				p3.focus();
+			}else{
+				a2.textContent = "X";
+				data[los][5]++;
+				bad++;
+			}
+		}
+		if(input == 2){
+			if(p3.value.toLowerCase() == data[los][3]){
+				a3.textContent = "K";
+				data[los][4]++;
+				ok++;
+				p1.focus();
+			}else{
+				a3.textContent = "X";
+				data[los][5]++;
+				bad++;
+			}
+		}
+		if(p1.value.toLowerCase() == data[los][1] && p2.value.toLowerCase() == data[los][2] && p3.value.toLowerCase() == data[los][3]){
+			random();
+		}
+
+		var all = ok + bad;
+		var allW = data[los][4] + data[los][5];
+		if(all === 0)
+			all++;
+		if(allW === 0)
+			allW++;
+		var okGlobalV = Math.round(ok/all*10000)/100;
+		var badGlobalV = Math.round(bad/all*10000)/100;
+		var okLocalV = Math.round(data[los][4]/allW*10000)/100;
+		var badLocalV = Math.round(data[los][5]/allW*10000)/100;
+
+		if(okGlobalV == 0 && badGlobalV == 0)
+			okGlobalV = 100;
+		if(okLocalV == 0 && badLocalV == 0)
+			okLocalV = 100;
+				
+		document.getElementById("ok").style.width = okGlobalV + "%";
+		document.getElementById("ok").textContent = (okGlobalV > 15) ? (okGlobalV + "%") : "";
+		document.getElementById("bad").style.width = badGlobalV + "%";
+		document.getElementById("bad").textContent = (badGlobalV > 15) ? (badGlobalV + "%") : "";
+		document.getElementById("okW").style.width = okLocalV + "%";
+		document.getElementById("okW").textContent = (okLocalV > 15) ? (okLocalV + "%") : "";
+		document.getElementById("badW").style.width = badLocalV + "%";
+		document.getElementById("badW").textContent = (badLocalV > 15) ? (badLocalV + "%") : "";
+		console.log("	check");
 	}
 
 	function random(){
-		los = Math.floor(Math.random()*5)+0;
+		var areYouSure = 0;
+		var all = 0, corectness = 0;
+		var lastlos = -1;
+		do{
+			lastlos = los;
+			los = Math.floor(Math.random()*20)+0;
+
+			if(all != 0){
+				console.log("	I changed my mind", Math.round(areYouSure*100)/100+"<"+corectness);
+				console.log("	" + data[lastlos][0], "->", data[los][0]);
+			}
+
+			areYouSure = Math.random()*1.5;
+			all = data[los][4] + data[los][5];
+			if(all == 0)
+				all++;
+			corectness = data[los][4]/all;
+		}while(areYouSure < corectness);
+
+		console.log("	Sure:", Math.round(areYouSure*100)/100, "Corectness:", corectness);
+
 		p0.value = (los+1) +": "+data[los][0];
 		p1.value = "";
 		p2.value = "";
@@ -126,11 +202,11 @@
 		a1.textContent = "X";
 		a2.textContent = "X";
 		a3.textContent = "X";
-		p1.focus();
-		pkt++;
+		console.log(data[los][0]);
 	}
 
 	random();
+	check();
 </script>
 
 </html>
