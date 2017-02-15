@@ -1,0 +1,34 @@
+body{
+	margin: 0;
+	padding: 0;
+	background-color: #111;
+}
+
+#clock {
+	height: 350px;
+	width: 100%;
+	background-color: #333;
+	margin-top: calc(50% - 500px);
+	padding: 10px;
+}
+
+.group {
+	height: 330px;
+	width: 110px;
+	margin: 5px;
+	padding: 5px;
+	display: inline-block;
+	background-color: #444;
+}
+
+.cell {
+	height: 100px;
+	width: 100px;
+	margin: 5px;
+	float: left;
+	background-color: #555;
+}
+
+.cellActive {
+	background-color: #f16cd4 !important;
+}
