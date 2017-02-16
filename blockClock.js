@@ -1,4 +1,5 @@
 function Clock(){
+	var that = this;
 	this.time = null;
 	this.hourFDigitGroup = null;
 	this.hourSDigitGroup = null;
@@ -21,6 +22,7 @@ function Clock(){
 		this.groups[4].createCellGroup();
 		this.groups[5] = new CellGroup("G5", 9);
 		this.groups[5].createCellGroup();
+		$(".group:last").css("margin-right", "0");
 	};
 
 	this.update = function(){
@@ -38,7 +40,18 @@ function Clock(){
 		this.groups[3].setCellsState(min%10);
 		this.groups[4].setCellsState(Math.floor(sec/10));
 		this.groups[5].setCellsState(sec%10);
-	}
+	};
+
+	this.start = function(){
+		that.update();
+		setInterval(function(){
+			that.update();
+		}, 1000);
+	};
+
+	this.intro = function(){
+		$(".cell").fadeIn(1000);
+	};
 };
 
 function CellGroup(_name, _cellsAmount){
@@ -49,7 +62,7 @@ function CellGroup(_name, _cellsAmount){
 	this.inactiveCells = [];
 
 	this.createCellGroup = function(){
-		$("#clock").append("<div id="+this.name+" class='group' style='width: "+Math.ceil(this.cellsAmount/3) * 110+"px'></div>");
+		$("#clock>.clear").before("<div id="+this.name+" class='group' style='width: "+Math.ceil(this.cellsAmount/3) * 1.2 +"em'></div>");
 		this.createCells();
 	};
 
@@ -103,7 +116,5 @@ function Cell(_name, _parent){
 
 var clock = new Clock();
 clock.createClock();
-
-setInterval(function(){
-	clock.update();
-}, 1000);
+clock.intro();
+clock.start();

@@ -1,34 +1,53 @@
 body{
 	margin: 0;
 	padding: 0;
-	background-color: #111;
+	background: #111;
+	font-size: 50px;
+	height: 100%;
+}
+
+#container {
+	width: 100%;
+	height: 100%;
+}
+
+#clockContainer {
+	position: absolute;
+	top: 50%;
+	margin-top: -2.3em;
+	padding: 0.5em 0;
+	width: 100%;
+	background: linear-gradient(135deg, #7d7e7d 0%,#0e0e0e 100%);
 }
 
 #clock {
-	height: 350px;
-	width: 100%;
-	background-color: #333;
-	margin-top: calc(50% - 500px);
-	padding: 10px;
+	height: 3.6em;
+	width: 19.3em;
+	margin: auto;
 }
 
 .group {
-	height: 330px;
-	width: 110px;
-	margin: 5px;
-	padding: 5px;
+	height: 3.6em;
+	width: 1.2em;
+	margin-right: 0.5em;
 	display: inline-block;
-	background-color: #444;
+	/*background: #444;*/
 }
 
 .cell {
-	height: 100px;
-	width: 100px;
-	margin: 5px;
+	height: 1em;
+	width: 1em;
+	margin: 0.1em;
 	float: left;
-	background-color: #555;
+	background: #555;
+	display: none;
+	border-radius: 0.05em;
 }
 
 .cellActive {
-	background-color: #f16cd4 !important;
+	background: radial-gradient(ellipse at center, #cb60b3 0%, #ca249d 100%) !important;
+}
+
+.clear{
+	clear: both;
 }
