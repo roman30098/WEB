@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>NYC Sunset</title>
+	<link rel="stylesheet" href="">
+
+	<style>
+@import url('https://fonts.googleapis.com/css?family=Carme');
+</style>
+	
+	<style>
+		@font-face {
+		    font-family: N;
+		    src: url(Poppins-Medium.ttf);
+		}
+
+
+		*{
+			margin: 0;
+			padding: 0;
+			font-family: 'Carme', sans-serif;
+			font-size: 160px;
+			font-weight: 700;
+		}
+
+		#container{
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			left: 0;
+			top: 0;
+		}
+
+		#scene{
+			position: absolute;
+			top: 50%;
+  			left: 50%;
+  			transform: translate(-50%, -50%);
+		}
+
+		#bg-video{
+            min-width: 100%;
+			min-height: 100%;
+			z-index: -100;
+		}
+
+        #mask{
+            position: absolute;
+            z-index: 100;
+        }
+
+		#clockContianer{
+			position: absolute;
+			top: 50%;
+			left: 50%;
+		}
+
+		#clock3dTransform{
+			perspective: 1600px;
+			perspective-origin: -112% 81%;
+		}
+
+		#clock{
+			color: #fdfeff;
+			filter: blur(0.5px);
+			position: relative;
+			left: -380px;
+    		z-index: 0;
+    		transform-origin: bottom;
+    		transform: rotateY(19deg) translate3d(0px, 188px, 0px);
+    		/*text-shadow: -6px -1px rgb(131, 108, 79), -12px -3px 0px #7d6752;*/
+    		/*background: rgba(220, 60, 60, 0.5);*/
+    		line-height: 0.7em;
+		}
+
+		#clockShadow{
+			position: relative;
+			left: -380px;
+		    z-index: -50;
+		    transform-origin: bottom;
+			transform: rotateY(19deg) rotateX(-90deg) translate3d(0px, 0px, 82px) scale(1, 3);
+			/*background: rgba(60, 220, 60, 0.5);*/
+		}
+
+		#day{
+			position: absolute;
+			left: -380px;
+		    z-index: 0;
+		    transform-origin: bottom;
+			transform: rotateY(19deg) translate3d(0px, 192px, 0px);
+			background: rgba(60, 220, 60, 0.5);
+		}
+
+        #clockShadow>div{
+            line-height: 0.7em;
+        }
+
+        #clockShadow>div>div{
+        	background: linear-gradient(to bottom, rgba(74, 68, 66, 0.68) 0%, rgba(75, 68, 66, 0.98) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: blur(5px);
+        }
+
+        .clock-dots{
+        	width: 55px;
+		    position: relative;
+		    top: -14px;
+        	display: inline-block;
+        	text-align: left;
+        }
+
+        .clock-hours,
+        .clock-minutes{
+        	width: 210px;
+        	display: inline-block;
+        	text-align: left;
+        }
+
+	</style>
+</head>
+<body>
+	<div id="container">
+		<div id="scene">
+            <img src="NYCSunsoetMask.png" id="mask">
+            <video id="bg-video" autoplay="true" loop="loop" preload="auto" muted="muted">
+				<source src="NYCSunset.ogv" type="video/ogg">
+				<!-- <source src="NYCSunset.webm" type="video/webm"> -->
+				Video not supported
+			</video>
+			<div id="clockContianer">
+				<div id="clock3dTransform">
+					<div id="clock">
+						<div class="clock-hours"></div><div class="clock-dots"></div><div class="clock-minutes"></div>
+					</div>
+					<div id="clockShadow">
+						<div>
+							<div class="clock-hours"></div><div class="clock-dots"></div><div class="clock-minutes"></div>
+						</div>
+					</div>
+					<!-- <div id="day">MONDAY</div> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="../js/jquery.js"></script>
+	<script>
+		function showTime(){
+			var date = new Date;
+			var a = date.getSeconds();
+			var b = date.getMinutes();
+			var c = date.getHours();
+			var time = ((a < 10) ? "0"+a : a) + ((c%2 == 0) ? "<span style='opacity: 1; top: -10px'>:</span>" : "<span style='opacity: 0'>:</span>") + ((b < 10) ? "0"+b : b);
+
+			$(".clock-hours").html((c < 10) ? "0"+c : c);
+			$(".clock-dots").html((a%2 == 0) ? ":" : "");
+			$(".clock-minutes").html((b < 10) ? "0"+b : b);
+			$("#clockShadow>h1").html(time);
+		}
+
+		function createShadow(x, y, offX, offY, depth, rgb, rgb2){
+		    var shadow = "";
+		    var steps = depth;
+            for (var i = 1; i <= steps; i++) {
+                if(shadow != "")
+                    shadow += ", ";
+
+		        shadow += i*x + "px " + i*y +"px "+rgb+",";
+                shadow += ((i*x)+offX) + "px " + ((i*y)+offY) +"px "+rgb2;
+            }
+
+            $("#clock").css('text-shadow', shadow);
+        }
+
+        $( document ).on( "mousemove", function( event ) {
+            //createShadow((event.pageX - $(window).width()/2)/100, (event.pageY - $(window).height()/2)/100, 1, 2, 5);
+        });
+
+        createShadow(-2.45, -0.4, 1, 3, 7, "rgb(77, 81, 87)", "rgb(57, 61, 67)");
+
+        $( document ).on( "click", function( event ) {
+            console.log((event.pageX - $(window).width()/2)/100, (event.pageY - $(window).height()/2)/100, 1, 2, 5);
+        });
+
+		setInterval("showTime()", 1000);
+		setInterval(function(){
+			createShadow(-2.45, -0.54, 4, 2, 7, $("#day").css("color"));
+		}, 100);
+		showTime();
+	</script>
+</body>
+</html>

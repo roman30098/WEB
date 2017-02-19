@@ -1,0 +1,8 @@
+bin/
+doc/
+licenses/
+presets/
+convert.bat
+*.mp4
+*.mov
+*.webm
