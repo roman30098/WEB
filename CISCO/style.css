@@ -1,0 +1,52 @@
+#dictionary {
+    margin-top: 45px;
+}
+
+#chars {
+    display: flex;
+    flex-direction: row;
+    flex-flow: wrap;
+    justify-content: center;
+}
+
+.char {
+    width: 50px;
+    height: 55px;
+    background-color: #dddddd;
+    font-size: 2em;
+    vertical-align: middle;
+    line-height: 50px;
+    border-radius: 2px;
+    margin: 5px;
+    border-bottom: 5px solid #aaa;
+    position: relative;
+    animation-duration: 1s;
+    top: 0;
+}
+
+.char:hover {
+    /*background-color: #cccccc;*/
+    animation-duration: 1s;
+    cursor: pointer;
+    top: 5px;
+    height: 50px;
+    border-bottom: none;
+}
+
+.charActive {
+    background-color: #4cae4c;
+    color: #fff;
+}
+
+.chapterTitle {
+    width: 100%;
+    font-size: 5em;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+    padding: 20px;
+}
+
+.entry {
+    margin-bottom: 20px;
+    text-algin: justify;
+}

@@ -1,0 +1,159 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CISCO DICTIONARY</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="jumbotron">
+        <div class="container text-center">
+            <h1>CISCO DICTIONARY</h1>
+            <h3>Kompletna* baza terminów z oficjalnego słownika CISCO</h3>
+            <sup>*Prawie</sup>
+        </div>
+    </div>
+    <div class="container text-center">
+        <h3>Aby zacząć wybierz interesujące cię hasła:</h3>
+        <div id="chars">
+            <!--  .....  -->
+            <!-- <div class='char' data-char='A' ><p>A</p></div> -->
+        </div>
+    </div>
+    <div id="dictionary" class="container">
+        <div id="ca" class="chapter">
+            <h1 class="chapterTitle text-center">A</h1>
+            <div class="row">
+                <div class="entry col-sm-4 text-justify">
+                    <h2>Lorem ipsum</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc porttitor in massa in consectetur. Suspendisse potenti. Praesent vulputate interdum ligula ut aliquam. Suspendisse in fermentum justo. Pellentesque fermentum tincidunt massa. Praesent eget neque non dolor malesuada lobortis a vel justo. Sed eu varius odio. Nunc luctus orci diam, nec pharetra risus egestas a.</p>
+                </div>
+                <div class="entry col-sm-4 text-justify">
+                    <h2>Lorem ipsum</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc porttitor in massa in consectetur. Suspendisse potenti. Praesent vulputate interdum ligula ut aliquam. Suspendisse in fermentum justo. Pellentesque fermentum tincidunt massa. Praesent eget neque non dolor malesuada lobortis a vel justo. Nunc luctus orci diam, nec pharetra risus egestas a.</p>
+                </div>
+                <div class="entry col-sm-4 text-justify">
+                    <h2>Lorem ipsum</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc porttitor in massa in consectetur. Suspendisse potenti. Praesent vulputate interdum ligula ut aliquam. Suspendisse in fermentum justo. Pellentesque fermentum tincidunt massa. Nunc luctus orci diam, nec pharetra risus egestas a.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="jquery.js"></script>
+<script>
+
+    var activeChars = [];
+    var chars = "4ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var updateTimeout = null;
+
+    function createCharsButtonsDOM(char) {
+        activeChars[char] = false;
+        return "<div class='char' data-char='"+char+"' ><p>"+char+"</p></div>";
+    }
+
+    function createCharsButtons(){
+        var charsContainer = $("#chars");
+        for(var i = 0; i < chars.length; i++){
+            charsContainer.append(createCharsButtonsDOM(chars[i]));
+        }
+    }
+
+    function createEntryDOM(header, text) {
+        var q =  "<div class='entry col-md-4'>";
+        q += "<h2 class='text-capitalize'>"+header+"</h2>";
+        q += "<p class='text-justify'>"+text+"</p>";
+        q += "</div>";
+        return q;
+    }
+
+    function createChapterDOM(char) {
+        var q = "<div id='c"+char+"' class='chapter'>";
+        q += " <h1 class='chapterTitle text-center'>"+char+"</h1>";
+        q += "</div>";
+        return q;
+    }
+
+    function createRowDOMStart(){
+        return "<div class='row'>";
+    }
+
+    function createRowDOMEnd() {
+        return "</div>";
+    }
+
+    function hideChapter(char) {
+        $("#c"+char).remove();
+        if($("#c"+char).length != 0)
+            hideChapter(char);
+    }
+
+    function showChapter(dataJSON, char) {
+        hideChapter(char);
+        $("#dictionary").append(createChapterDOM(char));
+
+        var q = "";
+        q += createRowDOMStart()
+        for(var i = 0; i < dataJSON.length; i++){
+            if( i % 3 == 0 ){
+                q += createRowDOMEnd();
+                q += createRowDOMStart();
+            }
+            q += createEntryDOM(dataJSON[i][2], dataJSON[i][5]);
+        }
+
+        if( dataJSON.length % 3 != 0 )
+            createRowDOMEnd();
+
+        $("#c"+char).append(q);
+    }
+
+    function fetchEntriesFromDB(char) {
+        $.ajax({
+            type: 'get',
+            url: 'DB.php',
+            dataType: "text",
+            data: {'char': char},
+            success: function(data, status) {
+                if(data != null) {
+                    showChapter(JSON.parse(data), char);
+                    console.log(char);
+                }
+            },
+            error: function(xhr, desc, err) {
+                console.log(xhr);
+                console.log("Details: " + desc + "\nError:" + err);
+            }
+        });
+    }
+
+    function updateDictionary(){
+        for(var i=0; i<chars.length; i++){
+            var j = chars[i];
+            if(activeChars[j])
+                fetchEntriesFromDB(j);
+            else
+            	hideChapter(j);
+        }
+    }
+
+    $(document).ready(function () {
+        createCharsButtons();
+
+        $(".char").click(function () {
+            $(this).toggleClass("charActive");
+            var data = $(this).data("char");
+            activeChars[data] = !activeChars[data];
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout("updateDictionary()", 500);
+        });
+
+        $(".char:first").trigger("click");
+    });
+
+</script>
+
+</html>
