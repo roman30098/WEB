@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Buttons</title>
+
+	<style>
+
+		/*Stuff*/
+
+		body {
+			background-color: #fff;
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+		}
+
+		.container {
+			width: 920px;
+			margin: auto;
+			background-color: #eee;
+			padding: 10px;
+		}
+
+		/*Buttons*/
+
+		.button {
+			width: 200px;
+			padding: 10px;
+			text-align: center;
+			display: inline-block;
+			margin: 10px;
+			background-color: #ddd;
+		}
+
+		.button:hover {
+			background-color: #444;
+			color: #ddd;
+			cursor: pointer;
+		}
+
+		/*Content*/
+
+		.content {
+			margin: 10px;
+		}
+
+		.buttons {
+			padding: 0 85px;
+			background-color: #ccc;
+		}
+
+		.hide {
+			display: none;
+		}
+
+	</style>
+</head>
+<body>
+	<div class="container">
+		<div class="buttons">
+			<div class="button" onclick="switchContent('0');"> A </div>
+			<div class="button" onclick="switchContent('1');"> B </div>
+			<div class="button" onclick="switchContent('2');"> C </div>
+			<!--
+			<div class="button" onclick="switchContent('X');"> Something </div>
+			-->
+		</div>
+		<div class="buttons-content">
+			<div id="0" class="content">
+				<h1>MLP4EVER</h1>
+				<p>My Little Pony: Friendship Is Magic is a children's animated fantasy television series developed by Lauren Faust.</p>
+			</div>
+			<div id="1" class="content hide">
+				<h1>XDD</h1>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Soluta autem ab ullam pariatur odit numquam sequi rem aperiam praesentium harum?</p>
+			</div>
+			<div id="2" class="content hide">
+				<h1>XDD</h1>
+				<p>Optio dolore inventore voluptates culpa labore placeat fuga sit asperiores tenetur officia illo reprehenderit quidem, debitis laborum nostrum? Vero facilis, id doloribus cum dolorum pariatur rem esse eligendi laudantium error veritatis, non excepturi saepe voluptas nihil ad?</p>
+			</div>
+			<!-- 
+			<div id="0" class="content"> Something </div>
+			<div id="X" class="content hide"> Something </div>
+			-->
+		</div>
+	</div>
+
+	<script>
+
+		//Count of .content, important
+		var contentCount = 3;
+
+		function switchContent(ID) {
+			for(var i = 0; i < contentCount; i++)
+				document.getElementById(i).classList.add("hide");
+			document.getElementById(ID).classList.remove("hide");
+		}
+
+	</script>
+</body>
+</html>
