@@ -7,8 +7,8 @@
 	<link rel="stylesheet" href="">
 
 	<style>
-@import url('https://fonts.googleapis.com/css?family=Carme');
-</style>
+		@import url('https://fonts.googleapis.com/css?family=Carme');
+	</style>
 	
 	<style>
 		*{
@@ -261,6 +261,13 @@
 			updateColor();
 		}
 
+		function createColorControllers(){
+			side.createColorController(10, 10);
+			sideShadow.createColorController(60, 10);
+			front.createColorController(110, 10);
+			setInterval("updateColor()", 50);
+		}
+
 		window.wallpaperPropertyListener = {
 		    applyUserProperties: function(properties) {
 		    	if(properties.skin) {
@@ -316,13 +323,8 @@
 		var sideShadow = new color(57, 61, 67, "sideShadow");
 		var front = new color(253, 254, 255, "front");
 
-		//side.createColorController(10, 10);
-		//sideShadow.createColorController(60, 10);
-		//front.createColorController(110, 10);
-
 		setColorScheme(activeScheme);
 
-		//setInterval("updateColor()", 50);
 		setInterval("showTime()", 1000);
 		showTime();
 	</script>
