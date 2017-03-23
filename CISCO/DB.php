@@ -1,6 +1,6 @@
 <?php
 //error_reporting(0);
-$lh = true;
+$lh = false;
 $serwer = ($lh)?'localhost':'mysql.hostinger.pl';
 $uzytkownik = ($lh)?'root':'u402006295_r300';
 $baza = ($lh)?'cisco':'u402006295_rd';
