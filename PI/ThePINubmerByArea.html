@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Calculate PI by circle area</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+	<h1 class="text-center">CONSOLE</h1>
+</body>
+
+<script>
+
+const A = 100000;
+const RADIUS = A/2;
+const RANDOM_MAX = A;
+
+function getRandomNumber(){
+	return Math.round(Math.random() * RANDOM_MAX) - RADIUS;
+}
+
+function Point(x, y){
+	this.x = x;
+	this.y = y;
+}	
+
+function pythagoras(a, b){
+	return Math.sqrt((a * a) + (b * b));
+}
+
+function pointInCircle(p){
+	if(Math.abs(pythagoras(p.x, p.y)) <= RADIUS)
+		return true;
+	return false;
+}
+
+function calcPI(points){
+	var inner = 0;
+	var point = null;
+
+	for(var i=0; i<points; i++){
+		point = new Point(getRandomNumber(), getRandomNumber());
+		if(pointInCircle(point))
+			inner++;
+	}
+
+	var PIa = inner * A * A;
+	var PIb = RADIUS * RADIUS * points;
+	var cPI = PIa / PIb;
+
+	//
+	//Ratio between inner and outer points on circle is:
+	//
+	// P(circle)      π*r²     x
+	// --------- = --------- = -
+	// P(square)   a² - π*r²   y
+	//
+	//So
+	//
+	//    x*a²
+	// ---------- = π
+	// r² * (x+y)
+	//
+	// x = points inside circle, y = points outside circle, a = edge, r = radius = a/2
+	//
+	
+	return cPI;
+}
+
+function calc(accuracy, samples){
+	var sPI = 0;
+
+	for(var i = 0; i < samples; i++){
+		var temp = calcPI(accuracy);
+		console.log((i + 1) + ":", temp);
+		sPI += temp;
+	}
+
+	var cPI = sPI/samples;
+	var PI = Math.PI;
+
+	console.log("----------------------------------");
+	console.log("Accuracy:    ", accuracy);
+	console.log("Samples:     ", samples);
+	console.log("calculatedPI:", cPI);
+	console.log("realPI:      ", PI);
+	console.log("diffrence:   ", cPI - PI);
+	console.log("diffrence%:  ", Math.abs(((cPI - PI)/PI) * 100), "%");
+}
+
+calc(1000000, 100);
+
+</script>
+
+</html>

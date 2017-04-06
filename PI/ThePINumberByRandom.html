@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Calculate PI by GCD of randoms</title>
+	<link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+	<h1 class="text-center">CONSOLE</h1>
+</body>
+<script>
+
+const MAX_RANDOM = 1000000000;
+
+function GCD(a, b){
+	var temp = 0;
+
+	while(b != 0){
+		temp = a % b;
+		a = b;
+		b = temp;
+	}
+
+	return a;
+}
+
+function getRandomNumber(){
+	return Math.round(Math.random() * MAX_RANDOM);
+}
+
+function calcPI(iterations){
+	var coPrime = 0;
+
+	for(var i = 0; i < iterations; i++){
+		var a = getRandomNumber();
+		var b = getRandomNumber();
+
+		if(GCD(a, b) === 1)
+			coPrime++;
+	}
+
+	//
+	//Probability that two random integers is
+	// x = 6/PI²  =>   PI = sqrt(6/x)
+	//And
+	// x = a/b;
+	//So
+	// PI = sqrt(6/(a/b))
+	//
+	// a = coPrime, b = iterations, x = probability
+	//
+	
+	var calculatedPI = Math.sqrt( 6 / ( coPrime / iterations ) );
+	return calculatedPI;
+}
+
+function calc(accuracy, samples){
+	var sPI = 0;
+
+	for(var i = 0; i < samples; i++){
+		var temp = calcPI(accuracy);
+		console.log((i + 1) + ":", temp);
+		sPI += temp;
+	}
+
+	var cPI = sPI/samples;
+	var PI = Math.PI;
+
+	console.log("----------------------------------");
+	console.log("Accuracy:    ", accuracy);
+	console.log("Samples:     ", samples);
+	console.log("calculatedPI:", cPI);
+	console.log("realPI:      ", PI);
+	console.log("diffrence:   ", cPI - PI);
+	console.log("diffrence%:  ", Math.abs(((cPI - PI)/PI) * 100), "%");
+}
+
+calc(1000000, 100);
+</script>
+</html>
